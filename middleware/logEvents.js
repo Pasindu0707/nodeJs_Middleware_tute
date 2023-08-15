@@ -7,8 +7,7 @@ const fspromises=require('fs').promises
 const logEvent=async(msg,logFilePath)=>{
 
     const date=`${format(new Date(),'yyyy/MM/dd\tHH/mm/ss')}`
-    const massage= `${date}\t${uuid()}${msg}\n`
-    
+    const massage= `${date}\t${uuid()}\t${msg}\n`
 
     try{
     if(!fs.existsSync(path.join(__dirname,'..','Logs'))){
@@ -21,4 +20,10 @@ const logEvent=async(msg,logFilePath)=>{
     }
 }
 
-module.exports=logEvent
+const logger=(req,res,next)=>{
+    logEvent(`${req.method}\t${req.headers.origin}\t${req.url}`,'reqLog.txt')
+    console.log(`${req.method}\t${req.headers.origin}\t${req.url}`)
+    next()
+}
+
+module.exports={logger,logEvent}
